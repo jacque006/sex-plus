@@ -17,3 +17,5 @@
 npm i
 npm run dev
 ```
+
+Go to http://localhost:4000
