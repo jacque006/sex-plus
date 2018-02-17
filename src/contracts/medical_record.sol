@@ -1,9 +1,9 @@
 pragma solidity ^0.4.11;
 
-library MedicalRecord {
-    struct Data { mapping(uint => string) details; }
+library MedicalRecordLib {
+    struct Data { mapping(string => string) details; }
 
-    function update(Data storage self, uint property, string value)
+    function update(Data storage self, string property, string value)
         public
         returns (bool)
         {
@@ -14,7 +14,7 @@ library MedicalRecord {
             else
                 return false;
         }
-    function insert(Data storage self, uint property, string value)
+    function insert(Data storage self, string property, string value)
         public
         returns (bool)
         {
@@ -24,7 +24,7 @@ library MedicalRecord {
             return true;
         }
 
-    function remove(Data storage self, uint property, string value)
+    function remove(Data storage self, string property, string value)
         public
         returns (bool)
         {
@@ -34,7 +34,7 @@ library MedicalRecord {
             return true;
         }
 
-    function contains(Data storage self, uint property)
+    function contains(Data storage self, string property)
         public
         view
         returns (bool)
