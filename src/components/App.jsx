@@ -30,7 +30,7 @@ const store = createStore(
     router: routerReducer
   }),
   applyMiddleware(middleware)
-)
+);
 
 const ROUTES = {
   HOME: '/',
@@ -73,18 +73,18 @@ class Main extends React.Component {
     this.setState({
       drawerOpen: !drawerOpen
     });
-  }
+  };
 
   closeDrawer = () => {
     this.setState({
       drawerOpen: false
     });
-  }
+  };
 
   navigateTo = (path) => {
     store.dispatch(push(path));
     this.closeDrawer();
-  }
+  };
 
   render() {
     const { drawerOpen } = this.state;
@@ -96,8 +96,8 @@ class Main extends React.Component {
                 title="Sex+"
                 iconElementRight={
                   <Avatar style={{ cursor: 'pointer' }}>J</Avatar>}
-                onLeftIconButtonTouchTap={this.toggleDrawer}
-                onRightIconButtonTouchTap={() => this.navigateTo(ROUTES.PROFILE)}
+                onLeftIconButtonClick={this.toggleDrawer}
+                onRightIconButtonClick={() => this.navigateTo(ROUTES.PROFILE)}
               />
               <Drawer
                 open={drawerOpen}
@@ -105,10 +105,14 @@ class Main extends React.Component {
               >
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    Brands
+                    Main
                     <FlatButton
-                      label="Main"
+                      label="Home"
                       onClick={() => this.navigateTo(ROUTES.HOME)}
+                    />
+                    <FlatButton
+                        label="Submit"
+                        onClick={() => this.navigateTo(ROUTES.SUBMIT)}
                     />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>

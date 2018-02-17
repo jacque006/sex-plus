@@ -5,6 +5,7 @@ const express = require('express');
 const webpack = require("webpack");
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackConfig = require('./webpack.config');
+const compiler = webpack(webpackConfig);
 
 const cors = require('cors');
 
@@ -14,6 +15,8 @@ const {
   NODE_ENV,
   PORT
 } = process.env;
+
+const isProduction = () => NODE_ENV === 'production';
 
 // TODO Evaluate security of this further.
 app.use(cors());
@@ -28,10 +31,10 @@ app.get('/', (req, res) => {
 app.use('/node_modules', express.static('node_modules'));
 
 // Webpack
-if (process.env.NODE_ENV === 'production') {
+if (isProduction()) {
   app.use('/dist', express.static('dist'));
 } else {
-  app.use(webpackDevMiddleware(webpack(webpackConfig), {
+  app.use(webpackDevMiddleware(compiler, {
     publicPath: '/dist/'
   }));
 }

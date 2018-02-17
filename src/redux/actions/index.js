@@ -1,5 +1,8 @@
-export const FOO = 'FOO';
+export const SUBMIT = 'SUBMIT';
 
-export const foo = (bar) => {
-  return { type: FOO, bar }
+export const submit = (submissionData) => {
+    return {
+      type: SUBMIT,
+      submissionData,
+    }
 };

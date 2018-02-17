@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import foo from "./foo";
+import submit from "./submit";
 
 export default combineReducers({
-  foo,
+  submit,
 });
