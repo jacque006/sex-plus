@@ -24,13 +24,14 @@ contract UserContract {
         _;
     }
 
-    function UserContract(string name, int age, string gender)
+    function UserContract(string name, int age, string gender, address[] providers)
         public
         {
             user.addr = msg.sender;
             user.name = name;
             user.age = age;
             user.gender = gender;
+            user.records = new MedicalRecord(this, providers);
         }
 
     function changeName(string name) 
@@ -38,6 +39,13 @@ contract UserContract {
         onlyUser
         {
             user.name = name;
+        }
+
+    function getName()
+        public
+        returns(string)
+        {
+            return user.name;
         }
     
     function getRecordsContract()
