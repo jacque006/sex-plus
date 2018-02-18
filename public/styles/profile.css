@@ -7,3 +7,19 @@
 .profile--card{
     width: 50%;
 }
+
+.home--container{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home--card__sendMoney{
+    width: 50%;
+    margin:1rem;
+}
+
+.home--card__getContract{
+    width: 50%;
+}
