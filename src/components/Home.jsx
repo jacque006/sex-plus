@@ -101,14 +101,49 @@ export default class Home extends React.Component {
       stateMutability: "nonpayable",
       type: "function"
   }];
-    var address = this.contractData.contractAddress;
+    const sleepTime = 5000; // milliseconds
+
+    var address = this.contractData.contractAddress.trim();
+
     var MyContract = web3.eth.contract(abi);
     var myContractInstance = MyContract.at(address);
-    var call = myContractInstance.write(this.contractData.input, (error, result) => {
-      var result = myContractInstance.read.call((error, result) =>{
-        this.setState({contractOutput: result});
-        console.log(`result ${result}`);
-      });
+
+    myContractInstance.read.call((error, result) => {
+      console.debug(`Initial contract read result ${result}`);
+    });
+
+    console.debug('Contract inputs', 'Address', address, 'STI Input', this.contractData.stiInput);
+
+    myContractInstance.write(this.contractData.stiInput, (error, transactionHash) => {
+      console.debug('Transaction started', transactionHash);
+
+      const checkForTransactinDone = () => {
+        web3.eth.getTransaction(transactionHash, (err, transData) => {
+          if (err) {
+            console.error(err);
+            setTimeout(checkForTransactinDone, sleepTime);
+            return;
+          }
+
+          console.debug('Transaction block number', transData.blockNumber);
+
+          if (transData.blockNumber > 0) {
+            console.debug('Transaction done');
+
+            setTimeout(() => {
+              myContractInstance.read.call((error, result) => {
+                this.setState({contractOutput: result});
+                console.debug(`Transaction read result ${result}`);
+              });
+            }, sleepTime);
+
+            return;
+          }
+
+          setTimeout(checkForTransactinDone, sleepTime);
+        });
+      };
+      setTimeout(checkForTransactinDone, sleepTime);
     });
 
   };
