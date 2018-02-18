@@ -74,7 +74,7 @@ class Main extends React.Component {
           <Provider store={store} >
             <div>
               <AppBar
-                title="Sex+"
+                title="S+"
                 iconElementRight={
                   <Avatar style={{ cursor: 'pointer' }}>J</Avatar>}
                 onLeftIconButtonClick={this.toggleDrawer}

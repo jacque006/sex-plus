@@ -1,6 +1,6 @@
-loadScript("Provider.js")
+loadScript("userC.js")
 
-var contractFromMap = contractContent.contracts["provider.sol:Provider"]
+var contractFromMap = contractContent.contracts["medical_record.sol:MedicalRecord"]
 var contractTemplate = web3.eth.contract(JSON.parse(contractFromMap.abi))
 var gasValue = eth.estimateGas({data:"0x"+contractFromMap.bin})
 
