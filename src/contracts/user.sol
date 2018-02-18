@@ -31,6 +31,7 @@ contract UserContract {
             user.name = name;
             user.age = age;
             user.gender = gender;
+            user.whitelist = providers;
             user.records = new MedicalRecord(this, providers);
         }
 
