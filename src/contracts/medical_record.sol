@@ -1,65 +1,12 @@
 pragma solidity ^0.4.11;
 
-library MedicalRecordLib {
-    struct Data { mapping(string => string) details; }
-
-    function update(Data storage self, string property, string value)
-        public
-        returns (bool)
-        {
-            if (contains(self, property)) {
-                self.details[property] = value;
-                return true;
-            }
-            else
-                return false;
-        }
-    function insert(Data storage self, string property, string value)
-        public
-        returns (bool)
-        {
-            if (contains(self, property))
-                return false; // already there
-            self.details[property] = value;
-            return true;
-        }
-
-    function remove(Data storage self, string property)
-        public
-        returns (bool)
-        {
-            if (!contains(self, property))
-                return false; // not there
-            delete self.details[property];
-            return true;
-        }
-
-    function get(Data storage self, string property)
-        public
-        returns (string)
-        {
-            if (contains(self, property)) {
-                return self.details[property];
-            }
-            return "";
-        }
-
-    function contains(Data storage self, string property)
-        public
-        view
-        returns (bool)
-        {
-            // TODO why doesn't in know this is a string?
-            return bytes(self.details[property]).length > 0;
-        }
-}
-
 contract MedicalRecord {
-    using MedicalRecordLib for MedicalRecordLib.Data;
+    // It's all in the details
+    struct Data { mapping(string => string) details; }
 
     address user;
     address[] providers;
-    MedicalRecordLib.Data data;
+    Data private data;
 
     function MedicalRecord(address usr, address[] provs)
         public
@@ -103,37 +50,57 @@ contract MedicalRecord {
         _;
     }
 
-    // Only a provider can see raw data
-    // TODO allow THE user to see raw data vs any user
-    function getData(string property)
+    function update(string property, string value)
         public
         providerOnly
+        returns (bool)
+        {
+            if (contains(property)) {
+                data.details[property] = value;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    function insert(string property, string value)
+        public
+        providerOnly
+        returns (bool)
+        {
+            if (contains(property))
+                return false; // already there
+            data.details[property] = value;
+            return true;
+        }
+
+    function remove(string property)
+        public
+        providerOnly
+        returns (bool)
+        {
+            if (!contains(property))
+                return false; // not there
+            delete data.details[property];
+            return true;
+        }
+
+    function get(string property)
+        public
         returns (string)
         {
-            return MedicalRecordLib.get(data, property);
+            if (contains(property)) {
+                return data.details[property];
+            }
+            return "";
         }
 
-    function insertData(string property, string value)
+    function contains(string property)
         public
-        providerOnly
+        view
         returns (bool)
         {
-            return MedicalRecordLib.insert(data, property, value);
-        }
-
-    function updateData(string property, string value)
-        public
-        providerOnly
-        returns (bool)
-        {
-            return MedicalRecordLib.update(data, property, value);
-        }
-
-    function removeData(string property)
-        public
-        providerOnly
-        returns (bool)
-        {
-            return MedicalRecordLib.remove(data, property);
+            // TODO why doesn't in know this is a string?
+            return bytes(data.details[property]).length > 0;
         }
 }

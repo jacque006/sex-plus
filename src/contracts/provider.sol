@@ -4,18 +4,36 @@ import "./medical_record.sol";
 import "./user.sol";
 
 contract Provider {
-    using MedicalRecordLib for MedicalRecordLib.Data;
-    using UserLib for UserLib.User;
-
-    modifier isWhiteListed(UserManager usrMgr) {
-        require(usrMgr.isWhiteListed(msg.sender));
+    modifier isWhiteListed(UserContract usrCtrct) {
+        require(usrCtrct.isWhiteListed(msg.sender));
         _;
     }
 
-    function addRecord(UserManager usrMgr, string property, string value)
+    function getRecord(UserContract usrCtrct, string property)
         public
-        isWhiteListed(usrMgr)
+        isWhiteListed(usrCtrct)
         {
-            usrMgr.user.records.insert(property, value);
+            usrCtrct.getRecordsContract().get(property);
+        }
+
+    function insertRecord(UserContract usrCtrct, string property, string value)
+        public
+        isWhiteListed(usrCtrct)
+        {
+            usrCtrct.getRecordsContract().insert(property, value);
+        }
+
+    function updateRecord(UserContract usrCtrct, string property, string value)
+        public
+        isWhiteListed(usrCtrct)
+        {
+            usrCtrct.getRecordsContract().update(property, value);
+        }
+
+    function removeRecord(UserContract usrCtrct, string property)
+        public
+        isWhiteListed(usrCtrct)
+        {
+            usrCtrct.getRecordsContract().remove(property);
         }
 }

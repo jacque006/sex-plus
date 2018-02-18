@@ -2,26 +2,19 @@ pragma solidity ^0.4.11;
 
 import "./medical_record.sol";
 
-library UserLib {
-
-
-
-}
-
-contract UserManager {
+contract UserContract {
     struct User {
         // State Variables (Stored)
         address addr;
         string name;
         int age;
         string gender;
-        MedicalRecordLib.Data records;
+
 
         // List of certified medical providers
         address[] whitelist;
+        MedicalRecord records;
     }
-
-    using MedicalRecordLib for MedicalRecordLib.Data;
 
     User public user;
 
@@ -31,7 +24,7 @@ contract UserManager {
         _;
     }
 
-    function UserManager(string name, int age, string gender)
+    function UserContract(string name, int age, string gender)
         public
         {
             user.addr = msg.sender;
@@ -50,6 +43,13 @@ contract UserManager {
         {
             user.name = name;
         }
+    
+    function getRecordsContract()
+        public
+        returns(MedicalRecord)
+        {
+            return user.records;
+        }
 
     function isWhiteListed(address provider)
         public
@@ -64,8 +64,6 @@ contract UserManager {
              }
             return isWL;
         }
-
-
 
     // Language doesn't have toString()
     function bytes32ToString (bytes32 data)
