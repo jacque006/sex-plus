@@ -5,12 +5,16 @@ import {
     Checkbox,
     DatePicker,
     RaisedButton,
+    FlatButton,
     TextField,
 } from 'material-ui';
 
 import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 
 import { submit } from "../../redux/actions";
+
+import { HOME } from '../../routes';
 
 class Submit extends React.Component {
     constructor(props) {
@@ -18,6 +22,7 @@ class Submit extends React.Component {
 
         this.state = {
             isBirthControlChecked: false,
+            submitted: false,
         };
 
         this.submissionData = {
@@ -63,10 +68,18 @@ class Submit extends React.Component {
     onSubmit = () => {
         const { dispatch } = this.props;
         dispatch(submit(this.submissionData));
+        this.setState({
+            submitted: true,
+        })
+    };
+
+    goHome = () => {
+        const { dispatch } = this.props;
+        dispatch(push(HOME));
     };
 
     render() {
-        const { isBirthControlChecked } = this.state;
+        const { isBirthControlChecked, submitted } = this.state;
 
         return (
           <div style={{ flex: 1 }}>
@@ -95,7 +108,10 @@ class Submit extends React.Component {
                   label="Submit"
                   primary={true}
                   onClick={this.onSubmit}
+                  disabled={submitted}
               />
+              { submitted && <div>Information submitted. It may take some time to process</div> }
+              { submitted &&  <FlatButton label="Go Home" secondary={true} onClick={this.goHome}/>}
           </div>
         );
     }
