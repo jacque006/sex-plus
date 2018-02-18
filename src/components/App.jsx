@@ -55,7 +55,8 @@ class Home extends React.Component {
     
     this.contractData = {
       contractAddress: '',
-      input: ''
+      stiInput:'',
+      bcInput: ''
     };
 
     this.state = {
@@ -103,8 +104,12 @@ class Home extends React.Component {
     this.contractData.contractAddress = newValue;
   };
 
-  onInputChange = (event, newValue) => {
-    this.contractData.input = newValue;
+  onStiInputChange = (event, newValue) => {
+    this.contractData.stiInput = newValue;
+  };
+
+  onBirthControlInputChange = (event, newValue) => {
+    this.contractData.bcInput = newValue;
   };
 
   onSendContract = () => {
@@ -157,7 +162,9 @@ class Home extends React.Component {
             <CardText>
               <TextField hintText="Contract address" floatingLabelText="Contract address" onChange={this.onContractAddressChange}/>
               <br/>
-              <TextField hintText="Input" floatingLabelText="Input" onChange={this.onInputChange}/>
+              <TextField hintText="STI true or false" floatingLabelText="STI" onChange={this.onStiInputChange}/>
+              <br/>
+              <TextField hintText="Birth Control true or false" floatingLabelText="Birth Control" onChange={this.onBirthControlInputChange}/>
               <br/>
               <RaisedButton label="Execute Contract" primary={true} onClick={this.onSendContract}/>
               <br/>
