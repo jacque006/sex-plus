@@ -9,31 +9,18 @@ contract Provider {
         _;
     }
 
-    function getRecord(UserContract usrCtrct, string property)
+    function getRecord(UserContract usrCtrct)
         public
         isWhiteListed(usrCtrct)
+        returns(MedicalRecord)
         {
-            usrCtrct.getRecordsContract().get(property);
+            usrCtrct.getRecordsContract();
         }
 
-    function insertRecord(UserContract usrCtrct, string property, string value)
+    function updateRecord(UserContract usrCtrct, bool std, bool birthCtr, uint submitDate, uint expDate)
         public
         isWhiteListed(usrCtrct)
         {
-            usrCtrct.getRecordsContract().insert(property, value);
-        }
-
-    function updateRecord(UserContract usrCtrct, string property, string value)
-        public
-        isWhiteListed(usrCtrct)
-        {
-            usrCtrct.getRecordsContract().update(property, value);
-        }
-
-    function removeRecord(UserContract usrCtrct, string property)
-        public
-        isWhiteListed(usrCtrct)
-        {
-            usrCtrct.getRecordsContract().remove(property);
+            usrCtrct.getRecordsContract().updateData(std, birthCtr, submitDate, expDate);
         }
 }
