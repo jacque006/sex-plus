@@ -2,11 +2,16 @@ pragma solidity ^0.4.11;
 
 contract MedicalRecord {
     // It's all in the details
-    struct Data { mapping(string => string) details; }
+    struct Data { 
+        bool std;
+        bool birthCtr;
+        uint submitDate;
+        uint expDate;
+    }
 
     address user;
     address[] providers;
-    Data private data;
+    Data public data;
 
     function MedicalRecord(address usr, address[] provs)
         public
@@ -50,57 +55,13 @@ contract MedicalRecord {
         _;
     }
 
-    function update(string property, string value)
+    function updateData(bool std, bool birthCtr, uint submitDate, uint expDate)
         public
         providerOnly
-        returns (bool)
         {
-            if (contains(property)) {
-                data.details[property] = value;
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-    function insert(string property, string value)
-        public
-        providerOnly
-        returns (bool)
-        {
-            if (contains(property))
-                return false; // already there
-            data.details[property] = value;
-            return true;
-        }
-
-    function remove(string property)
-        public
-        providerOnly
-        returns (bool)
-        {
-            if (!contains(property))
-                return false; // not there
-            delete data.details[property];
-            return true;
-        }
-
-    function get(string property)
-        public
-        returns (string)
-        {
-            if (contains(property)) {
-                return data.details[property];
-            }
-            return "";
-        }
-
-    function contains(string property)
-        public
-        view
-        returns (bool)
-        {
-            // TODO why doesn't in know this is a string?
-            return bytes(data.details[property]).length > 0;
+            data.std = std;
+            data.birthCtr = birthCtr;
+            data.submitDate = submitDate;
+            data.expDate = expDate;
         }
 }

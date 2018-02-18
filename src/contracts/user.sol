@@ -31,10 +31,6 @@ contract UserContract {
             user.name = name;
             user.age = age;
             user.gender = gender;
-
-            // Since age and gender are "medical records" store them as such
-            user.records.insert("age", bytes32ToString(bytes32(user.age)));
-            user.records.insert("gender", user.gender);
         }
 
     function changeName(string name) 
@@ -63,20 +59,5 @@ contract UserContract {
                  }
              }
             return isWL;
-        }
-
-    // Language doesn't have toString()
-    function bytes32ToString (bytes32 data)
-        public
-        returns (string) 
-        {
-            bytes memory bytesString = new bytes(32);
-            for (uint j=0; j<32; j++) {
-                byte char = byte(bytes32(uint(data) * 2 ** (8 * j)));
-                if (char != 0) {
-                    bytesString[j] = char;
-                }
-            }
-            return string(bytesString);
         }
 }
