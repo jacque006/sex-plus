@@ -4,6 +4,8 @@ import "./medical_record.sol";
 import "./user.sol";
 
 contract Provider {
+    function Provider() public {}
+
     modifier isWhiteListed(UserContract usrCtrct) {
         require(usrCtrct.isWhiteListed(msg.sender));
         _;

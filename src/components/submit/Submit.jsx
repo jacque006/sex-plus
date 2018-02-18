@@ -9,14 +9,7 @@ import {
     TextField,
 } from 'material-ui';
 
-import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-
-import { submit } from "../../redux/actions";
-
-import { HOME } from '../../routes';
-
-class Submit extends React.Component {
+export default class Submit extends React.Component {
     constructor(props) {
         super(props);
 
@@ -25,54 +18,232 @@ class Submit extends React.Component {
             submitted: false,
         };
 
-        this.submissionData = {
-            etheriumAddress: '',
-            name: '',
-            dateValue: new Date(),
-            birthControl: {
+        this.contractData = {
+            contractAddress: '',
+            userAddress: '',
+            std: false,
+            birthCtr: {
                 checked: false,
                 durationMonths: '',
             },
-            stiChecked: false,
+            submitDate: Date.now(),
+            expDate: Date.now()
         };
+
+        this.onSendContract = this.onSendContract.bind(this);
     }
 
-    onAddressChange = (event, newValue) => {
-        this.submissionData.etheriumAddress = newValue;
+    onContractAddressChange = (event, newValue) => {
+        this.contractData.contractAddress = newValue;
     };
 
-    onNameChange = (event, newValue) => {
-        this.submissionData.name = newValue;
+    onUserAddressChange = (event, newValue) => {
+        this.contractData.userAddress = newValue;
     };
 
-    onDateChange = (event, newValue) => {
-        this.submissionData.dateValue = newValue;
+    onSTDChange = (event, newValue) => {
+        this.contractData.std = newValue;
     };
 
     onBirthControlChecked = (event, isChecked) => {
       this.setState({
-          isBirthControlChecked: isChecked,
-      }, () => {
-          this.submissionData.birthControl.checked = isChecked;
+        birthCtr: isChecked,
       });
+      this.contractData.birthCtr.checked = isChecked;
     };
 
-    onDurationChange = (event, newValue) => {
-        this.submissionData.birthControl.durationMonths = newValue;
-    };
+    onSendContract = () => {
+        var providerAbi = [{
+            constant: false,
+            inputs: [{
+                name: "usrCtrct",
+                type: "address"
+            }],
+            name: "getRecord",
+            outputs: [{
+                name: "",
+                type: "address"
+            }],
+            payable: false,
+            stateMutability: "nonpayable",
+            type: "function"
+        }, {
+            constant: false,
+            inputs: [{
+                name: "usrCtrct",
+                type: "address"
+            }, {
+                name: "std",
+                type: "bool"
+            }, {
+                name: "birthCtr",
+                type: "bool"
+            }, {
+                name: "submitDate",
+                type: "uint256"
+            }, {
+                name: "expDate",
+                type: "uint256"
+            }],
+            name: "updateRecord",
+            outputs: [],
+            payable: false,
+            stateMutability: "nonpayable",
+            type: "function"
+        }, {
+            inputs: [],
+            payable: false,
+            stateMutability: "nonpayable",
+            type: "constructor"
+        }];
 
-    onStiChecked = (event, isChecked) => {
-        this.submissionData.stiChecked = isChecked;
-    };
+        var userAbi = [{
+            constant: false,
+            inputs: [],
+            name: "getName",
+            outputs: [{
+                name: "",
+                type: "string"
+            }],
+            payable: false,
+            stateMutability: "nonpayable",
+            type: "function"
+        }, {
+            constant: true,
+            inputs: [],
+            name: "getRecordsContract",
+            outputs: [{
+                name: "",
+                type: "address"
+            }],
+            payable: false,
+            stateMutability: "view",
+            type: "function"
+        }, {
+            constant: true,
+            inputs: [],
+            name: "user",
+            outputs: [{
+                name: "addr",
+                type: "address"
+            }, {
+                name: "name",
+                type: "string"
+            }, {
+                name: "age",
+                type: "int256"
+            }, {
+                name: "gender",
+                type: "string"
+            }, {
+                name: "provider",
+                type: "address"
+            }, {
+                name: "records",
+                type: "address"
+            }],
+            payable: false,
+            stateMutability: "view",
+            type: "function"
+        }, {
+            constant: false,
+            inputs: [{
+                name: "name",
+                type: "string"
+            }],
+            name: "changeName",
+            outputs: [],
+            payable: false,
+            stateMutability: "nonpayable",
+            type: "function"
+        }, {
+            constant: false,
+            inputs: [{
+                name: "provider",
+                type: "address"
+            }],
+            name: "isWhiteListed",
+            outputs: [{
+                name: "",
+                type: "bool"
+            }],
+            payable: false,
+            stateMutability: "nonpayable",
+            type: "function"
+        }, {
+            inputs: [{
+                name: "name",
+                type: "string"
+            }, {
+                name: "age",
+                type: "int256"
+            }, {
+                name: "gender",
+                type: "string"
+            }, {
+                name: "provider",
+                type: "address"
+            }],
+            payable: false,
+            stateMutability: "nonpayable",
+            type: "constructor"
+        }];
 
-    onSubmit = () => {
-        const { dispatch } = this.props;
-        const newSubmission =
+        const sleepTime = 5000; // milliseconds
 
-        dispatch(submit(this.submissionData));
-        this.setState({
-            submitted: true,
-        })
+    var address = this.contractData.contractAddress.trim();
+
+    var MyContract = web3.eth.contract(providerAbi);
+    var myContractInstance = MyContract.at(address);
+
+    var UsrContract = web3.eth.contract(userAbi);
+    var userContractInst = UsrContract.at(this.contractData.userAddress);
+
+    console.debug('Contract inputs', 
+        'Address', this.contractData.userAddress,
+        'STD', this.contractData.std,
+        'BirthCtr', this.contractData.birthCtr,
+        'Submit Date', this.contractData.submitDate,
+        'Exp Date', this.contractData.expDate);
+
+    myContractInstance.updateRecord(
+        userContractInst,
+        this.contractData.std,
+        this.contractData.birthCtr,
+        this.contractData.submitDate,
+        this.contractData.expDate,
+        (error, transactionHash) => {
+      console.debug('Transaction started', transactionHash);
+
+      const checkForTransactinDone = () => {
+        web3.eth.getTransaction(transactionHash, (err, transData) => {
+          if (err) {
+            console.error(err);
+            setTimeout(checkForTransactinDone, sleepTime);
+            return;
+          }
+
+          console.debug('Transaction block number', transData.blockNumber);
+
+          if (transData.blockNumber > 0) {
+            console.debug('Transaction done');
+
+            setTimeout(() => {
+              myContractInstance.updateRecord.call((error, result) => {
+                this.setState({contractOutput: result});
+                console.debug(`Transaction result ${result}`);
+              });
+            }, sleepTime);
+
+            return;
+          }
+
+          setTimeout(checkForTransactinDone, sleepTime);
+        });
+      };
+      console.debug('About to start timer');
+      setTimeout(checkForTransactinDone, sleepTime);
+    });
     };
 
     goHome = () => {
@@ -86,17 +257,13 @@ class Submit extends React.Component {
         return (
           <div style={{ flex: 1 }}>
               <TextField
-                  floatingLabelText="Etherium Address"
-                  onChange={this.onAddressChange}
+                  floatingLabelText="Provider Address"
+                  onChange={this.onContractAddressChange}
               /><br />
               <TextField
-                  floatingLabelText="Your Name"
-                  onChange={this.onNameChange}
-              />
-              <DatePicker
-                  hintText="Date of Record"
-                  onChange={this.onDateChange}
-              />
+                  floatingLabelText="User Address"
+                  onChange={this.onUserAddressChange}
+              /><br />
               <Checkbox
                   label="On Birth Control"
                   onCheck={this.onBirthControlChecked}
@@ -104,12 +271,12 @@ class Submit extends React.Component {
               { isBirthControlChecked && <TextField floatingLabelText="Duration (Months)" onChange={this.onDurationChange}/>}
               <Checkbox
                   label="Active STI"
-                  onCheck={this.onStiChecked}
+                  onCheck={this.onSTDChange}
               />
               <RaisedButton
                   label="Submit"
                   primary={true}
-                  onClick={this.onSubmit}
+                  onClick={this.onSendContract}
                   disabled={submitted}
               />
               { submitted && <div>Information submitted. It may take some time to process</div> }
@@ -118,17 +285,3 @@ class Submit extends React.Component {
         );
     }
 }
-
-Submit.propTypes = {
-    dispatch: PropTypes.func.isRequired,
-};
-
-const mapStateToProps = (state) => {
-    return {
-        submit: state.submit,
-    }
-};
-
-export default connect(
-    mapStateToProps,
-)(Submit)

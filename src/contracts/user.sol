@@ -51,6 +51,7 @@ contract UserContract {
     
     function getRecordsContract()
         public
+        constant
         returns(MedicalRecord)
         {
             return user.records;

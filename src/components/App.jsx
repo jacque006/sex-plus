@@ -23,6 +23,8 @@ import Submit from './submit/Submit';
 import ViewRecord from './record/ViewRecord';
 import Home from './Home';
 import Profile from './Profile';
+import MedicalProvider from './MedicalProvider';
+import NewUser from './NewUser';
 
 import * as ROUTES from '../routes';
 
@@ -97,6 +99,15 @@ class Main extends React.Component {
                         label="Record"
                         onClick={() => this.navigateTo(ROUTES.RECORD)}
                     />
+                    <FlatButton
+                      label="Medical Provider"
+                      onClick={() => this.navigateTo(ROUTES.MEDICAL_PROVIDER)}
+                    />
+                    <FlatButton
+                      label="New User"
+                      onClick={() => this.navigateTo(ROUTES.NEW_USER)}
+                    />
+
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     Settings
@@ -110,9 +121,11 @@ class Main extends React.Component {
               <ConnectedRouter history={history}>
                 <div>
                   <Route exact path={ROUTES.HOME} component={Home}/>
+                  <Route exact path={ROUTES.MEDICAL_PROVIDER} component={MedicalProvider}/>
                   <Route exact path={ROUTES.PROFILE} component={Profile}/>
                   <Route exact path={ROUTES.SUBMIT} component={Submit}/>
                   <Route exact path={ROUTES.RECORD} component={ViewRecord }/>
+                  <Route exact path={ROUTES.NEW_USER} component={NewUser} />
                 </div>
               </ConnectedRouter>
             </div>
