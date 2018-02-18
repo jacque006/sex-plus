@@ -9,9 +9,10 @@ import {
   Card, 
   CardActions, 
   CardHeader, 
-  CardMedia, 
   CardTitle, 
-  CardText
+  CardText,
+  TextField,
+  RaisedButton
 } from 'material-ui';
 
 import { createStore, combineReducers, applyMiddleware } from 'redux';
@@ -40,10 +41,61 @@ const store = createStore(
 );
 
 class Home extends React.Component {
+constructor(props) {
+  super(props);
+  this.submissionData = {
+    userAddress: '',
+    sendToAddress: '',
+    ethAmount: ''
+  };
+  this.onSendTransaction = this.onSendTransaction.bind(this);
+}
+  onUserAddressChange = (event, newValue) => {
+    this.submissionData.userAddress = newValue;
+  };
+
+  onSendToAddressChange = (event, newValue) => {
+    this.submissionData.sendToAddress = newValue;
+  };
+  
+  onEthAmountChange = (event, newValue) => {
+    this.submissionData.ethAmount = newValue;
+  };
+  onSendTransaction = () => {
+    // const { dispatch } = this.props;
+    
+    console.log(this.submissionData.userAddress);
+    console.log(this.submissionData.sendToAddress);
+    console.log(this.submissionData.ethAmount);
+
+    var transactionObj = {
+      from: this.submissionData.userAddress,
+      to: this.submissionData.sendToAddress,
+      value: this.submissionData.ethAmount
+    }
+
+    web3.eth.sendTransaction({from: this.submissionData.userAddress, to: this.submissionData.sendToAddress, value: web3.toWei(this.submissionData.ethAmount, 'ether')}, (error, result) => {
+      if (error != null){
+        console.log(`Error in sending transaction ${error}`);
+      } else {
+          console.log(`Success ${result}`);
+      }
+    });
+  };
+  
   render() {
     return (
       <div>
         Home
+        <div className="home--container">
+        <TextField hintText="Your address" floatingLabelText="From"  onChange={this.onUserAddressChange}/>
+        <br/>
+        <TextField hintText="Send to address" floatingLabelText="To" onChange={this.onSendToAddressChange}/>
+        <br/>
+        <TextField hintText="0" floatingLabelText="Amount of ETH" onChange={this.onEthAmountChange}/>
+        <br/>
+        <RaisedButton label="Send ETH" primary={true} onClick={this.onSendTransaction}/>
+        </div>
       </div>
     );
   }
@@ -113,6 +165,9 @@ class Profile extends React.Component {
             <CardTitle title="Account Balance"/>
               <CardText>
               {this.state.accountBalance.toString()} ETH
+              </CardText>
+              <CardText>
+              Get Records
               </CardText>
           </Card>
         </div>
