@@ -4,10 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>Sex+</title>
-<<<<<<< Updated upstream
     <link href="./public/styles/profile.css" rel="stylesheet" type="text/css">
-=======
->>>>>>> Stashed changes
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 </head>
 
@@ -22,57 +19,6 @@
     <!-- Main -->
     <!-- TODO Split out vendor deps -->
     <script src="/dist/bundle.js"></script>
-<<<<<<< Updated upstream
-
-=======
-    <!-- <script src="src/metamask.js"></script>  -->
-    <script>
-        window.addEventListener('load', function () {
-
-            // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-            console.log("starting script");
-            if (typeof web3 !== 'undefined') {
-                var accounts, balance;
-
-                // Use the browser's ethereum provider
-                var provider = web3.currentProvider;
-                if (provider.isMetaMask) {
-                    console.log("You're using metamask!");
-
-                    // Web3 doesn't support many synchronous requests, so we're using callbacks 
-                    // to ensure async functionality 
-                    web3.eth.getAccounts(function (error, result) {
-                        if (error != null) {
-                            console.log(`An error occurred getting accounts: ${error}`);
-                        } else {
-                            // Just getting first account in results list
-                            accounts = result[0];
-                            console.log(`account: ${accounts}`);
-                            // Getting balance from first account in list of accounts    
-                            web3.eth.getBalance(accounts, function (error, result) {
-                                if (error != null) {
-                                    console.log(
-                                        `An error occured getting account balance: ${error}`
-                                    );
-                                } else {
-                                    balance = result;
-                                    console.log(`balance: ${balance}`);
-                                }
-                            });
-                        }
-
-
-
-                    });
-                }
-
-            } else {
-                console.log('No web3? You should consider trying MetaMask!');
-            }
-
-        });
-    </script>
->>>>>>> Stashed changes
 </body>
 
 </html>
