@@ -10,14 +10,14 @@ contract MedicalRecord {
     }
 
     address user;
-    address[] providers;
+    address provider;
     Data public data;
 
-    function MedicalRecord(address usr, address[] provs)
+    function MedicalRecord(address usr, address prov)
         public
         {
             user = usr;
-            providers = provs;
+            provider = prov;
         }
 
     function isUser() 
@@ -31,14 +31,7 @@ contract MedicalRecord {
         private
         returns(bool)
         {
-            bool isProv = false;
-            for (uint8 i = 0; i < providers.length; i++) {
-                if (providers[i] == msg.sender) {
-                    isProv = true;
-                    break;
-                }
-            }
-            return isProv;
+            return msg.sender == provider;
         }
     
     modifier userOrProvider() {

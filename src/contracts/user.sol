@@ -12,7 +12,7 @@ contract UserContract {
 
 
         // List of certified medical providers
-        address[] whitelist;
+        address provider;
         MedicalRecord records;
     }
 
@@ -24,15 +24,15 @@ contract UserContract {
         _;
     }
 
-    function UserContract(string name, int age, string gender, address[] providers)
+    function UserContract(string name, int age, string gender, address provider)
         public
         {
             user.addr = msg.sender;
             user.name = name;
             user.age = age;
             user.gender = gender;
-            user.whitelist = providers;
-            user.records = new MedicalRecord(this, providers);
+            user.provider = provider;
+            user.records = new MedicalRecord(this, provider);
         }
 
     function changeName(string name) 
@@ -60,13 +60,6 @@ contract UserContract {
         public
         returns(bool)
         {
-            bool isWL = false;
-             for (uint8 i = 0; i < user.whitelist.length; i++) {
-                 if (provider == user.whitelist[i]) {
-                     isWL = true;
-                     break;
-                 }
-             }
-            return isWL;
+            return provider == user.provider;
         }
 }
