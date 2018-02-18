@@ -11,6 +11,8 @@ const cors = require('cors');
 
 const app = express();
 
+var web3 = require('web3');
+
 const {
   NODE_ENV,
   PORT
@@ -29,6 +31,8 @@ app.get('/', (req, res) => {
 // Node Dependencies
 // TODO Remove, move to webpack
 app.use('/node_modules', express.static('node_modules'));
+
+app.use('/public', express.static('public'));
 
 // Webpack
 if (isProduction()) {
