@@ -85,6 +85,7 @@ class Profile extends React.Component {
                   );
                 } else {
                   balance = result;
+                  balance = web3.fromWei(balance, 'ether');
                   this.setState({accountBalance: balance});
                 }
               });
