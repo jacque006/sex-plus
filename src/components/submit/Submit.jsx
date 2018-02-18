@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 
 import {
     Checkbox,
+    Card,
+    CardTitle,
+    CardText,
     DatePicker,
     RaisedButton,
     FlatButton,
@@ -30,7 +33,13 @@ export default class Submit extends React.Component {
             expDate: Date.now()
         };
 
+        this.getRecordContractData = {
+            contractAddress: '',
+            userAddress: ''
+        }
+
         this.onSendContract = this.onSendContract.bind(this);
+        this.onSendGetRecordContract = this.onSendGetRecordContract.bind(this);
     }
 
     onContractAddressChange = (event, newValue) => {
@@ -52,8 +61,8 @@ export default class Submit extends React.Component {
       this.contractData.birthCtr.checked = isChecked;
     };
 
-    onSendContract = () => {
-        var providerAbi = [{
+    getProviderAbi = function() {
+        return [{
             constant: false,
             inputs: [{
                 name: "usrCtrct",
@@ -96,8 +105,10 @@ export default class Submit extends React.Component {
             stateMutability: "nonpayable",
             type: "constructor"
         }];
+    };
 
-        var userAbi = [{
+    getUserAbi = function() {
+    return [{
             constant: false,
             inputs: [],
             name: "getName",
@@ -188,62 +199,125 @@ export default class Submit extends React.Component {
             stateMutability: "nonpayable",
             type: "constructor"
         }];
+    }
 
+    onSendContract = () => {
         const sleepTime = 5000; // milliseconds
 
-    var address = this.contractData.contractAddress.trim();
+        var address = this.contractData.contractAddress.trim();
 
-    var MyContract = web3.eth.contract(providerAbi);
-    var myContractInstance = MyContract.at(address);
+        var MyContract = web3.eth.contract(this.getProviderAbi());
+        var myContractInstance = MyContract.at(address);
 
-    var UsrContract = web3.eth.contract(userAbi);
-    var userContractInst = UsrContract.at(this.contractData.userAddress);
+        var UsrContract = web3.eth.contract(this.getUserAbi());
+        var userContractInst = UsrContract.at(this.contractData.userAddress);
 
-    console.debug('Contract inputs', 
-        'Address', this.contractData.userAddress,
-        'STD', this.contractData.std,
-        'BirthCtr', this.contractData.birthCtr,
-        'Submit Date', this.contractData.submitDate,
-        'Exp Date', this.contractData.expDate);
+        console.debug('Contract inputs', 
+            'Address', this.contractData.userAddress,
+            'STD', this.contractData.std,
+            'BirthCtr', this.contractData.birthCtr,
+            'Submit Date', this.contractData.submitDate,
+            'Exp Date', this.contractData.expDate);
 
-    myContractInstance.updateRecord(
-        userContractInst,
-        this.contractData.std,
-        this.contractData.birthCtr,
-        this.contractData.submitDate,
-        this.contractData.expDate,
-        (error, transactionHash) => {
-      console.debug('Transaction started', transactionHash);
+        myContractInstance.updateRecord(
+            userContractInst,
+            this.contractData.std,
+            this.contractData.birthCtr,
+            this.contractData.submitDate,
+            this.contractData.expDate,
+            (error, transactionHash) => {
+        console.debug('Transaction started', transactionHash);
 
-      const checkForTransactinDone = () => {
-        web3.eth.getTransaction(transactionHash, (err, transData) => {
-          if (err) {
-            console.error(err);
+        const checkForTransactinDone = () => {
+            web3.eth.getTransaction(transactionHash, (err, transData) => {
+            if (err) {
+                console.error(err);
+                setTimeout(checkForTransactinDone, sleepTime);
+                return;
+            }
+
+            console.debug('Transaction block number', transData.blockNumber);
+
+            if (transData.blockNumber > 0) {
+                console.debug('Transaction done');
+
+                setTimeout(() => {
+                myContractInstance.updateRecord.call((error, result) => {
+                    this.setState({contractOutput: result});
+                    console.debug(`Transaction result ${result}`);
+                });
+                }, sleepTime);
+
+                return;
+            }
+
             setTimeout(checkForTransactinDone, sleepTime);
-            return;
-          }
-
-          console.debug('Transaction block number', transData.blockNumber);
-
-          if (transData.blockNumber > 0) {
-            console.debug('Transaction done');
-
-            setTimeout(() => {
-              myContractInstance.updateRecord.call((error, result) => {
-                this.setState({contractOutput: result});
-                console.debug(`Transaction result ${result}`);
-              });
-            }, sleepTime);
-
-            return;
-          }
-
-          setTimeout(checkForTransactinDone, sleepTime);
+            });
+        };
+        console.debug('About to start timer');
+        setTimeout(checkForTransactinDone, sleepTime);
         });
-      };
-      console.debug('About to start timer');
-      setTimeout(checkForTransactinDone, sleepTime);
-    });
+    };
+
+
+    onGetRecordContractAddressChange = (event, newValue) => {
+        this.getRecordContractData.contractAddress = newValue;
+    };
+
+    onGetRecordUserAddressChange = (event, newValue) => {
+        this.getRecordContractData.userAddress = newValue;
+    };
+
+    onSendGetRecordContract = () => {
+        const getleepTime = 5000; // milliseconds
+
+        var getAddress = this.getRecordContractData.contractAddress.trim();
+
+        var GetContract = web3.eth.contract(this.getProviderAbi);
+        var getContractInstance = GetContract.at(getAddress);
+
+        var GetUsrContract = web3.eth.contract(this.getUserAbi);
+        var getUserContractInst = GetUsrContract.at(this.getRecordContractData.userAddress);
+
+        console.debug('Contract inputs', 
+            'Contract Address', this.getRecordContractData.contractAddress,
+            'User Address', this.getRecordContractData.userAddress);
+
+       getUserContractInstance.getRecord(
+            this.getRecordContractData.contractAddress,
+            this.getRecordContractData.userAddress,
+            (error, transactionHash) => {
+            console.debug('Transaction started', transactionHash);
+
+            const checkForGetTransactinDone = () => {
+                web3.eth.getTransaction(transactionHash, (err, transData) => {
+                if (err) {
+                    console.error(err);
+                    setTimeout(checkForTransactinDone, sleepTime);
+                    return;
+                }
+
+                console.debug('Transaction block number', transData.blockNumber);
+
+                if (transData.blockNumber > 0) {
+                    console.debug('Transaction done');
+
+                    setTimeout(() => {
+                    myContractInstance.getRecord.call((error, result) => {
+                        this.setState({contractOutput: result});
+                        console.debug(`Transaction result ${result}`);
+                    });
+                    }, sleepTime);
+
+                    return;
+                }
+
+                setTimeout(checkForGetTransactinDone, sleepTime);
+                });
+            };
+            setTimeout(checkForGetTransactinDone, sleepTime);
+            }
+        );
     };
 
     goHome = () => {
@@ -255,32 +329,60 @@ export default class Submit extends React.Component {
         const { isBirthControlChecked, submitted } = this.state;
 
         return (
-          <div style={{ flex: 1 }}>
-              <TextField
-                  floatingLabelText="Provider Address"
-                  onChange={this.onContractAddressChange}
-              /><br />
-              <TextField
-                  floatingLabelText="User Address"
-                  onChange={this.onUserAddressChange}
-              /><br />
-              <Checkbox
-                  label="On Birth Control"
-                  onCheck={this.onBirthControlChecked}
-              />
-              { isBirthControlChecked && <TextField floatingLabelText="Duration (Months)" onChange={this.onDurationChange}/>}
-              <Checkbox
-                  label="Active STI"
-                  onCheck={this.onSTDChange}
-              />
-              <RaisedButton
-                  label="Submit"
-                  primary={true}
-                  onClick={this.onSendContract}
-                  disabled={submitted}
-              />
-              { submitted && <div>Information submitted. It may take some time to process</div> }
-              { submitted &&  <FlatButton label="Go Home" secondary={true} onClick={this.goHome}/>}
+          <div>
+              <h3>
+                  Update Record
+              </h3>
+            <div className="home--container">
+                <Card className="home--card__getContract">
+                    <CardTitle title="Update Record"/>
+                    <CardText>
+                        <TextField
+                            floatingLabelText="Provider Address"
+                            onChange={this.onContractAddressChange}
+                        /><br />
+                        <TextField
+                            floatingLabelText="User Address"
+                            onChange={this.onUserAddressChange}
+                        /><br />
+                        <Checkbox
+                            label="On Birth Control"
+                            onCheck={this.onBirthControlChecked}
+                        />
+                        { isBirthControlChecked && <TextField floatingLabelText="Duration (Months)" onChange={this.onDurationChange}/>}
+                        <Checkbox
+                            label="Active STI"
+                            onCheck={this.onSTDChange}
+                        />
+                        <RaisedButton
+                            label="Submit"
+                            primary={true}
+                            onClick={this.onSendContract}
+                            disabled={submitted}
+                        />
+                        { submitted && <div>Information submitted. It may take some time to process</div> }
+                        { submitted &&  <FlatButton label="Go Home" secondary={true} onClick={this.goHome}/>}
+                    </CardText>
+                </Card>
+                <Card className="home--card__getContract">
+                    <CardTitle title="Get Record"/>
+                    <CardText>
+                    <TextField
+                            floatingLabelText="Contract Address"
+                            onChange={this.onGetRecordContractAddressChange}
+                        /><br />
+                    <TextField
+                            floatingLabelText="User Address"
+                            onChange={this.onGetRecordUserAddressChange}
+                        /><br />
+                    <RaisedButton
+                        label="Get Records"
+                        primary={true}
+                        onClick={this.onSendGetRecordContract}
+                    />
+                    </CardText>
+                </Card>
+          </div>
           </div>
         );
     }

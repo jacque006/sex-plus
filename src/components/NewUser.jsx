@@ -12,10 +12,6 @@ import LabelIcon from 'material-ui-icons/Label';
 export default class NewUser extends React.Component {
   constructor(props) {
     super(props);
-    this.submissionData = {
-      userAddress: '',
-      ethAmount: ''
-    };
 
     this.contractData = {
       contractAddress: '',
@@ -28,16 +24,9 @@ export default class NewUser extends React.Component {
     this.state = {
       contractOutput: ''
     }
+
     this.onSendContract = this.onSendContract.bind(this);
   }
-    
-  onUserAddressChange = (event, newValue) => {
-    this.submissionData.userAddress = newValue;
-  };
-
-  onEthAmountChange = (event, newValue) => {
-    this.submissionData.ethAmount = newValue;
-  };
 
   onContractAddressChange = (event, newValue) => {
     this.contractData.contractAddress = newValue;

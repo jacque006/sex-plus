@@ -174,18 +174,6 @@ export default class MedicalProvider extends React.Component {
                   {<LabelIcon/>}{this.state.contractOutput}
                 </CardText>
               </Card>
-              <Card className ="home--card__sendMoney">
-                <CardTitle title="Send Money"/>
-                <CardText>
-                  <TextField hintText="Your address" floatingLabelText="From"  onChange={this.onUserAddressChange}/>
-                  <br/>
-                  <TextField hintText="Send to address" floatingLabelText="To" onChange={this.onSendToAddressChange}/>
-                  <br/>
-                  <TextField hintText="0" floatingLabelText="Amount of ETH" onChange={this.onEthAmountChange}/>
-                  <br/>
-                  <RaisedButton label="Send ETH" primary={true} onClick={this.onSendTransaction}/>
-                </CardText>
-              </Card>
             </div>
           </div>
         );
