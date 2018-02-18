@@ -92,7 +92,7 @@ class Profile extends React.Component {
           });
         }
       } else {
-        // console.log('No web3? You should consider trying MetaMask!');
+        console.log('No web3? You should consider trying MetaMask!');
       }
     }  
       
