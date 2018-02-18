@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import {
     Checkbox,
@@ -7,9 +8,11 @@ import {
     TextField,
 } from 'material-ui';
 
+import { connect } from 'react-redux';
+
 import { submit } from "../../redux/actions";
 
-export default class Submit extends React.Component {
+class Submit extends React.Component {
     constructor(props) {
         super(props);
 
@@ -58,7 +61,8 @@ export default class Submit extends React.Component {
     };
 
     onSubmit = () => {
-        this.dispatch(submit(this.submissionData));
+        const { dispatch } = this.props;
+        dispatch(submit(this.submissionData));
     };
 
     render() {
@@ -96,3 +100,17 @@ export default class Submit extends React.Component {
         );
     }
 }
+
+Submit.propTypes = {
+    dispatch: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state) => {
+    return {
+        submit: state.submit,
+    }
+};
+
+export default connect(
+    mapStateToProps,
+)(Submit)

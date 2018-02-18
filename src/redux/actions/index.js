@@ -4,5 +4,5 @@ export const submit = (submissionData) => {
     return {
       type: SUBMIT,
       submissionData,
-    }
+    };
 };

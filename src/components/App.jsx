@@ -17,7 +17,7 @@ import { Route } from 'react-router';
 
 import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux';
 
-import reducers from '../redux/reducers';
+import * as reducers from '../redux/reducers';
 
 import Submit from './submit/Submit';
 
@@ -26,8 +26,8 @@ const middleware = routerMiddleware(history);
 
 const store = createStore(
   combineReducers({
-    ...reducers,
-    router: routerReducer
+      ...reducers,
+      router: routerReducer
   }),
   applyMiddleware(middleware)
 );
