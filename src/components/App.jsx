@@ -6,10 +6,10 @@ import {
   Avatar,
   Drawer,
   FlatButton,
-  Card, 
-  CardActions, 
-  CardHeader, 
-  CardTitle, 
+  Card,
+  CardActions,
+  CardHeader,
+  CardTitle,
   CardText,
   TextField,
   RaisedButton
@@ -26,6 +26,7 @@ import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-ro
 import * as reducers from '../redux/reducers';
 
 import Submit from './submit/Submit';
+import ViewRecord from './record/ViewRecord';
 
 import * as ROUTES from '../routes';
 
@@ -57,13 +58,13 @@ constructor(props) {
   onSendToAddressChange = (event, newValue) => {
     this.submissionData.sendToAddress = newValue;
   };
-  
+
   onEthAmountChange = (event, newValue) => {
     this.submissionData.ethAmount = newValue;
   };
   onSendTransaction = () => {
     // const { dispatch } = this.props;
-    
+
     console.log(this.submissionData.userAddress);
     console.log(this.submissionData.sendToAddress);
     console.log(this.submissionData.ethAmount);
@@ -82,7 +83,7 @@ constructor(props) {
       }
     });
   };
-  
+
   render() {
     return (
       <div>
@@ -119,8 +120,8 @@ class Profile extends React.Component {
         var provider = web3.currentProvider;
         if (provider.isMetaMask) {
 
-          // Web3 doesn't support many synchronous requests, so we're using callbacks 
-          // to ensure async functionality 
+          // Web3 doesn't support many synchronous requests, so we're using callbacks
+          // to ensure async functionality
           web3.eth.getAccounts((error, result) => {
             if (error != null) {
               console.log(`An error occurred getting accounts: ${error}`);
@@ -129,7 +130,7 @@ class Profile extends React.Component {
               account = result[0];
               this.setState({accountKey: account});
 
-              // Getting balance from first account in list of accounts    
+              // Getting balance from first account in list of accounts
               web3.eth.getBalance(account, (error, result) =>{
                 if (error != null) {
                   console.log(
@@ -147,8 +148,8 @@ class Profile extends React.Component {
       } else {
         console.log('No web3? You should consider trying MetaMask!');
       }
-    }  
-      
+    }
+
   render() {
     return (
       <div>
@@ -232,6 +233,10 @@ class Main extends React.Component {
                         label="Submit"
                         onClick={() => this.navigateTo(ROUTES.SUBMIT)}
                     />
+                    <FlatButton
+                        label="Record"
+                        onClick={() => this.navigateTo(ROUTES.RECORD)}
+                    />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
                     Settings
@@ -247,6 +252,7 @@ class Main extends React.Component {
                   <Route exact path={ROUTES.HOME} component={Home}/>
                   <Route exact path={ROUTES.PROFILE} component={Profile}/>
                   <Route exact path={ROUTES.SUBMIT} component={Submit}/>
+                  <Route exact path={ROUTES.RECORD} component={ViewRecord }/>
                 </div>
               </ConnectedRouter>
             </div>

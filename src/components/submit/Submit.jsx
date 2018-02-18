@@ -67,6 +67,8 @@ class Submit extends React.Component {
 
     onSubmit = () => {
         const { dispatch } = this.props;
+        const newSubmission =
+
         dispatch(submit(this.submissionData));
         this.setState({
             submitted: true,

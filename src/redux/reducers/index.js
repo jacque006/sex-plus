@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import submit from "./submit";
+import records from "./records";
 
 export default combineReducers({
-  submit,
+  records,
 });
