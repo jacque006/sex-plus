@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {
@@ -21,6 +20,8 @@ import * as reducers from '../redux/reducers';
 
 import Submit from './submit/Submit';
 
+import * as ROUTES from '../routes';
+
 const history = createHistory()
 const middleware = routerMiddleware(history);
 
@@ -31,12 +32,6 @@ const store = createStore(
   }),
   applyMiddleware(middleware)
 );
-
-const ROUTES = {
-  HOME: '/',
-  PROFILE: '/profile',
-  SUBMIT: '/submit',
-};
 
 class Home extends React.Component {
   render() {
